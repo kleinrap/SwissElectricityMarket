@@ -1,0 +1,312 @@
+
+\label{sec:}
+
+This is the detailed documentation, file by file of the Swiss electricity market model.
+
+%%%%%%%%%%%%
+\subsection{run\_elec.py}
+
+This is the file that is used to the electricity model. It has for input the duration of the runs in years. It then initialise the electricity model.
+
+The script is using a loop where each iteration is one year. This is the \texttt{step()} function of the \texttt{model\_elec.py} file.
+
+For checks, some of the results can be plotted every five years.
+
+Once the simulation has ended, the data is extracted from the \texttt{datacollector} and save as a \texttt{.csv} file.
+
+%%%%%%%%%%%% end of run\_elec.py
+
+
+%%%%%%%%%%%%
+\subsection{model\_elec.py}
+
+This script is composed of two main parts: the \texttt{get\_supply} functions at the beginning and the \texttt{class Electricity(Model)}. The functions are there for the datacollector. They are used to collect the data that needs to be saved from the model. They are outside of the class and only called by the datacollector following the architecture provided by mesa. Each of the functions returns what needs to be recorded and only that.
+
+The \texttt{class Electricity(Model)} begins with the initialisation of all the parameters that are needed for the simulation of the electricity model. This is detailed within the python file itself and is not detailed here.
+
+The functions:
+
+\begin{itemize}
+\item \texttt{policy\_implementation()}
+
+This function is used exclusively for the hybrid model. It implements whichever policy has been chosen by the policy makers through a modification of a number of pre-defined parameters. This function is not used when the electricity model is run alone.
+
+\item \texttt{step()}
+
+This function is used to simulate one year of the policy process. It includes the implementation of the policies, the iteration over 8760 hours and the calculation of the KPIs needed for the hybrid model at the end. The function returns the KPIs.
+
+\item \texttt{step\_hourly()}
+
+This is the main function of the electricity model. It does whatever needs to be run over an hour. This includes the merit-order curve construction and the selection of the point of supply and demand, it includes the investment of the actors and it includes all of the recording of the data points within the model.
+
+For the merit order curve: first the supply list is built, this is followed by the construction of the demand list. The point at which these cross is then calculated. Once it has been found, the electricity supplied is allocated to the different assets along with the amount of electricity. This is also true for the demand for the asset that have a certain demand.
+
+The first part of the merit curve is to construct the supply list. This list is composed of all of the assets and the supply they can provide and at what price. This calculate for each asset depending on the technology considered. The list is then sorted by prices which the assets that offer supply at the lower price at the front of the list and the most expensive ones at the end. This also includes a probability that certain assets will go offline due to unexpected maintenance.
+
+The same is then done for the demand list. But the list is ordered in the opposite sense with the highest demand prices at the front of the list and the lowest at the back. The demand list is only made of the inelastic demand, the demand from bordering countries and the demand from hydro power plants.
+
+Then, there is a need to find at which point the two list cross. That is when the demand meets the supply at the same price. This is done using an algorithm that runs through each of the lists. Every time the supply has been allocated to demand, supply of a new asset is added and vice versa. This algorithm also takes into account that capacity allocated from France through the NTC or LTC needs to add up to the total of the border capacity and not go over that limit. This results is dynamically adjusting the supply and demand lists as supply and demand are allocated.
+
+In some instances, when there is not enough supply to meet the inelastic demand, it is possible for there to be a blackout.
+
+Once the point where supply meets demand has been found, the algorithm stop and the electricity price for that specific hour has been defined. The supply is allocated to the different assets along with the demand. This allows for the calculation of the utilisation factor of the different technologies later on. The revenue per assets are also attributed.
+
+After the merit-order curve come the so-called end of step actions. This lumps all of the other actions that can be performed in a step. It includes mandatory actions along with opportunity actions (such as investments).
+
+These include:
+
+	\begin{itemize}
+	\item Nuclear asset maintenance
+	\item Asset ageing: simple iteration of one year for the age parameter for all assets
+	\item Investment algorithms: investors must decide whether they want to invest in new assets or not
+	\item End of life actions for assets: potential decommissioning, mothballing or re-investment in assets.
+	\item Planned assets actions: assets that are already planned need to be advanced in their steps, either constructed or put on hold.
+	\end{itemize}
+
+\item \texttt{hydro\_demand\_supply\_check}
+
+This is a function that is used to reset the hydro supply or demand if it is already supplying or demanding. This is done to avoid having a hydro pumping plant both providing and supplying. This only affect hydro pumping assets.
+
+\item \texttt{end\_of\_life}
+
+This function is used to perform the so-called end of life actions. This is divided in two parts. For the long term contracts, if they come to the end of their life they are decommissioned and put off line.
+
+For the nuclear, wind, solar and CCGT assets, if these assets are within ten years of their end of life, it consists of checking if the asset is profitable. This calls the next function with different actions depending on the profitability of the asset. If the asset is already mothballed, then a different set of profitability checks are performed.
+
+\item \texttt{end\_of\_life\_profitability}
+
+This function is used to assess the profitability of plants at their of life and perform the necessary actions based on the results of this profitability.
+
+First one year and five year profitability are calculated. Based on the results of these calculations, actions are taken.
+
+	\begin{itemize}
+	\item If the one year profitability is negative and the age of the asset is past its maximum lifetime, the asset is decommissioned.
+	\item If the one year profitability is negative but the five year is positive and the asset is not past its lifetime, the asset is mothballed.
+	\item If the one year profitability is positive and the asset is not past its lifetime:
+		\begin{itemize}
+		\item If the the asset has not yet been renovated, it is renovated and its life is extended by five years.
+		\item If the asset has already been renovated too much, it is decommissioned.
+		\end{itemize}
+	\end{itemize}
+
+\item \texttt{asset\_decommissioning}
+
+This function remove the asset that has been decommissioned from the asset schedule. Additionally, if the asset is a solar or a wind asset, then the utilisation factor potential for these assets is recalculated.
+
+\item \texttt{asset\_mothball}
+
+This function mothballs an asset. It puts it offline and extends its overall lifetime by one year.
+
+\item \texttt{asset\_demothball}
+
+This function puts back online assets that have been mothballed.
+
+\item \texttt{saving\_supply}
+
+This is the function that record the supply for each technology. This is done hourly, every time the merit-order curve has been completed.
+
+\item \texttt{saving\_demand}
+
+This is the function that record the demand for each technology (hydro pumping and NTC. This is done hourly, every time the merit-order curve has been completed.
+
+\item \texttt{planned\_assets\_invest}
+
+This is the function that is used to deal with the assets that are planned. These are stored in a list when the investors have decided to submit a permit. Each planned asset goes through a certain number of steps.
+
+Each planned asset has to go through a planning time, then, if approved, it is placed in a waiting list. If the asset if planned to be profitable, it is constructed by the investor. If not, it stays there until the end of the plan lifetime. At the end of the life of the plan, the asset is removed from the list of planned assets. The actions are provided as follows:
+
+	\begin{itemize}
+	\item If asset is in the approval process.
+	
+	If the asset has gone through the process time, check if the plan is approved. If approved, move to the waiting list for construction, if not remove asset from the planned asset list.
+	\item If the asset has been approved but is not in construction.
+	
+	If the asset has been too long planned and not constructed, it is removed from the list. If this is not the case, and its profitability index is higher than the hurdle rate, then the asset is placed in construction.
+	\item If the asset is in construction.
+	
+	If the asset has completed its construction time, it is added to the list of online assets for electricity generation.
+	\end{itemize}
+	
+	{\bfseries Not that with this loop, one assumes that the process for all technology types (solar, wind and CCGT) is the same.}
+
+\item \texttt{elec\_UF\_elec\_prices\_updates}
+
+This function is used to update the utilisation factors for solar, wind, CCGT and nuclear technology types. It is also used to update the historical price of these technologies. These prices are the ones used to extrapolate future prices for the NPV and profitability calculations. This is done yearly.
+
+\item \texttt{pp\_investment\_recording}
+
+This function is used to record the amount of investments in the different technologies.  This is used to inform the policy makers within the hybrid model.
+
+\item \texttt{pp\_supply\_recording}
+
+This function is used to record all of the supply over a year for the different technologies. These are stored within a dictionary.
+
+\item \texttt{parameter\_update\_yearly}
+
+This function performs all the parameter updates that are needed yearly. This includes:
+
+\begin{itemize}
+\item Update the technology parameters depending on pre-set input scenarios (emissions costs, variable costs, ...).
+\item Update the utilisation factor and electricity prices for each technology type (see \texttt{elec\_UF\_elec\_prices\_updates}), the general electricity prices, the cumulative electricity prices, the run of river growth potential and the demand growth.
+\item Reset revenue, and supply for all assets.
+\item Calculation of the utilisation factor per asset.
+\end{itemize}
+
+\item \texttt{parameter\_update\_hourly}
+
+This function performs all the parameter updates that are needed hourly. This includes:
+
+\begin{itemize}
+\item Reset the hourly supply recording, the hourly demand recording, the demand met parameter and the blackout boolean.
+\item Update the hydropower and waste reservoirs.
+\item Update the import and export values for the NTC assets.
+\item Update the ages of the assets and the planned assets.
+\item Update of the wind and solar conditions. 
+\item Introduction of random outages.
+\item Calculation of the price preference for the opportunity costs calculation.
+\end{itemize}
+
+\item \texttt{calculation\_solar\_UF\_potential}
+
+This function is used to determine the utilisation factor potential for solar installations. This is based on the maximum theoretical solar production in Switzerland and the total capacity already installed.
+
+\item \texttt{calculation\_wind\_UF\_potential}
+
+This function is used to determine the utilisation factor potential for wind installations. This is based on the maximum theoretical wind production in Switzerland and the total capacity already installed.
+
+\item \texttt{pp\_KPI\_calculation}
+
+This function is only used as part of the hybrid model. It calculates the KPIs that are needed for the policy actors within the policy emergence model. Each KPI is calculated separately. It consists of:
+
+\begin{itemize}
+\item Renewable energy production (S1)
+
+The calculation is made between the total supply and the total renewable supply (solar, wind, run of river, hydro and hydro pumping). Note that the total supply does not include the NTC and LTC supply. It is then normalised where 0 is no renewable production and 1 is only renewable production.
+
+\item Electricity prices (S2)
+
+The electricity price average is calculated using the last year average price. It is then normalised with the assumption that the maximum average yearly electricity price cannot go above 150 CHF. If this value turns out to be too low, a warning message will de displayed to tune the model accordingly.
+
+\item Renewable energy investment level (S3)
+
+The renewable energy investment level is calculating by looking at all investments (wind, solar and CCGT) and comparing it to the amount of renewable investment (wind and solar). A value of 0 means that there is no renewable investment and 1 that there is only renewable investments. Note that the investment only over the previous year are considered and not since the last time a policy was considered.
+
+\item Domestic emissions level (S4)
+
+The emissions are calculated using the CCGT-provided supply. They are normalised using an estimated highest amount. In this case, a value of 0 means that the domestic emissions are high and a value of 1 means that they are low.
+
+\item Imported emissions level (S5)
+
+The imported emissions are calculated using an estimation, based on scenarios, of the electricity mix of bordering countries, and the importations of Switzerland. The share of coal and CCGT is considered along with their respective emissions. This is normalised with an arbitrarily selected maximum level. A value of 0 means high imported emissions and a value of 1 means low emissions.
+
+\item Economy (PC1)
+
+The economy indicator is calculated through a weighted function that considers the electricity prices and the amount of investments only.
+
+\item Environment (PC2)
+
+The environment indicator is also calculated using a weighted function. It considers the amount of renewable energy, the amount of investments, the amount of domestic emissions and the amount of imported emissions.
+ 
+\end{itemize}
+
+\item \texttt{get\_supply}
+
+The \texttt{get\_supply} functions are numerous and not within the main class. They are used for the datacollector. They are not used anywhere else. Each function is used to collect a specific data point of the model. This is done hourly, when the datacollector function is called.
+
+\end{itemize}
+
+%%%%%%%%%%%% end of model\_elec.py
+
+%%%%%%%%%%%%
+\subsection{asset.py}
+
+This file is used to redefine the asset class. It copies and modifies the \texttt{Asset} class from mesa (former \texttt{Agent} class) and introduces the \texttt{AssetWCost} class for as a subclass of it. The new class is introduced for assets for which costs are needed and are present in the calculations. This consists of all assets except for the \texttt{LTContract} and \texttt{NTCAsset}.
+
+There are no functions that are used at this level of the \texttt{Asset}.
+
+%%%%%%%%%%%% end of asset.py
+
+%%%%%%%%%%%%
+\subsection{model\_elec\_agents.py}
+
+
+%%%%%%%%%%%% end of model\_elec\_agents.py
+
+%%%%%%%%%%%%
+\subsection{model\_elec\_assets.py}
+
+This script included each of the different technology types. Each technology type is its own class and has a number of functions that are used to determine the costs at which electricity is sold for that technology and the amount that can be supplied. Additional function are also sometimes present.
+
+\begin{itemize}
+\item \texttt{calculation\_opportunity\_cost}
+\item \texttt{PlannedAsset()}
+\item \texttt{SolarAsset(AsssetWCost)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\end{itemize}
+\item \texttt{WindAsset(AsssetWCost)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\end{itemize}
+\item \texttt{HydroAsset(AsssetWCost)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\item \texttt{reservoir\_step\_update}
+	\end{itemize}
+\item \texttt{HydroPumpingAsset(AsssetWCost)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\item \texttt{calculation\_cost\_demand}
+	\item \texttt{reservoir\_step\_update}
+	\end{itemize}
+\item \texttt{RunOfRiverAsset(AsssetWCost)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\end{itemize}
+\item \texttt{WasteAsset(AsssetWCost)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\item \texttt{reservoir\_step\_update}
+	\end{itemize}
+\item \texttt{CCGTAsset(AsssetWCost)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\end{itemize}
+\item \texttt{NuclearAsset(AsssetWCost)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\end{itemize}
+\item \texttt{LTContract(Asset)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\end{itemize}
+\item \texttt{NTCAsset(Asset)}
+	\begin{itemize}
+	\item \texttt{calculation\_cost}
+	\item \texttt{calculation\_supply}
+	\item \texttt{calculation\_demand}
+	\end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%% end of model\_elec\_assets.py
+
+%%%%%%%%%%%%
+\subsection{model\_elec\_agents\_init.py}
+
+
+%%%%%%%%%%%% end of model\_elec\_agents\_init.py
+
+%%%%%%%%%%%%
+\subsection{model\_elec\_assets\_init.py}
+
+
+%%%%%%%%%%%% end of model\_elec\_assets\_init.py

@@ -1,0 +1,56 @@
+This section outlines some passing thoughts as the model is being developped.
+
+\subsection{22/10/2019}
+
+In the current iteration of the model, all actors of the same affiliation practically have the same beliefs. Because there is no communication and perfect knowledge and information transmission, this means that the majority affiliation always decides on what policy instruments should be implemented based on their interests. If summarise, this means that one policy maker of the majority affiliation decides what policy should be implemented. This can be seen as a problem because it effectively means that the entire policy process part of the model is pretty much useless.
+
+However, if one were to think that we are only studying the impact of the electorate on policy change, then this is not so much of a problem. As the preferred states of the agents evolve over time, the policy selected might change. If it is limited to that then it might be fine.
+
+One way to make this more interesting would be to change the consensus criterion to one where 2/3rd of the actors need to prefer a policy instrument for it to be implemented. This, along with a different way to counting which instruments are preferred by 2/3rd of the actors would be needed. In such a scenario, the opposition would have a say on what policy instrument is implemented. This might further better represent Switzerland which tends to be a compromise country.
+
+\subsection{23/10/2019}
+
+One of the reasons why the actors always select policy instrument 0 is that all policy instruments just have very little impact on the model. Therefore, PI0 is always the one that is selected because it is always slightly better.
+
+There could also just be a lack of verification of the run\_batch elements. This needs to be further checked. Because even when the actors had different beliefs (the ones from the predation model of all models), then they also chose PI0.
+
+PI1 has been selected once on time step 5 for scenario 2 growth of 0\%.
+
+What about the fact that maybe the testing period of these policies is too limited, giving bad advice to the actors and therefore leading them to make bad decisions. This could be fixed by changing the amount of year checked every time. This is also very computationally inefficient.
+
+Test the model with 9 years of check for each policy instead of the current three.
+
+\subsection{24/10/2019}
+
+Today I am running the model for an evaluation interval of ten years on the desktop to check whether the results are affected.
+
+On a simulation with evaluation interval of 3, for scenario 2 growth 0\%, step 1 has selected PI9. Overall the rest of the selection seems to remain on PI0 for the majority of the time.
+
+On a simulation with evaluation interval of 10, for scenario 1 growth 1\%, step 1 has selected PI4. Overall the rest of the selection seems to remain on PI0 for the majority of the time.
+
+From an early look at the simulations, the evaluation interval change does not seem to affect the policy outcomes within the model.
+
+PI4 selected again once for another simulation.
+
+\subsection{25/10/2019}
+
+Performing verification on the policy instrument selection, it appears that the preference for all of the instruments is the same (0.091) for all actors. This means that there is a problem in the selection of the policy instruments. Maybe check this with the predation model and then see how that changes in the electricity model.
+
+Looking at the predation model, this does not appear to be a systematic issue with the policy emergence model. It seems to be a problem for the electricity model only.
+
+A mistake was found in the core of the model where the policy are evaluated. There was an indices problems when the results were compared to the initial KPIs meaning the agents were assessing the wrong policies (basically). It has been fixed and changed in all models (that now need to be rerun as well).
+
+One thing that still needs to be checked is, though all agents get the same information, they should have different policy instrument preferences based on their secondary goals. This does not seem to be the case for now in the electricity model. This needs to be checked.
+
+Looking at the predation model, it seems that the root of all problems is in the selection of the policy instruments based on preferences. The preferences do not add up to 1 (which they should).
+
+%Step +1 - Policy emergence model
+%Step count:  0
+%The agenda consists of PC 0 .
+%Policy formulation starts
+%Agent 0 - [0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091]
+%Agent 1 - [0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091]
+%Agent 4 - [0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091, 0.091]
+%[0, 0, 0]
+%The policy instrument selected is policy instrument  0 .
+%step ends

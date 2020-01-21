@@ -1,0 +1,149 @@
+This section outlines the inputs that are used to initialise the electricity market model.
+
+%%%%%%%%%%%%
+\subsection{Asset investments}
+
+Firms can invest in thermal, solar and wind technologies. The investments are discrete choices that are detailed below. Note that the costs change over time non-linearly, not all points are outlined below.
+
+\begin{center}
+\begin{tabular}{ |l|c|c|c| } 
+\hline
+Parameters			& Thermal		& Solar	& Wind	\\ \hline \hline
+Size [MW]				& 250 		& 100	& 100	\\ \hline
+Permit time [months]		& 36			& 0.5		& 6		\\ \hline
+Construction time [months]	
+					& 36			& 12		& 36		\\ \hline
+Plant lifetime [years]		& 55			& 30		& 25		\\ \hline
+Rejection rate [\%]		& 20			& 20		& 60		\\ \hline
+Annual fixed costs [CHF/kWh-year][2018]
+					& 10.4		& 49.3	& 8.8		\\ \hline
+Annual fixed costs [CHF/kWh-year][2035]
+					& 10.4		& 38.8	& 4.7		\\ \hline				
+Variable costs			& 2.7			& 0		& 0		\\ \hline
+Utilisation factor [\%]		& 0			& 20		& 20		 \\ \hline
+Investment costs [CHF/kWh] [2018]
+					& 1 051.5 		& 940.5 	& 1 396.9	\\ \hline
+Investment costs [CHF/kWh] [2035]
+					& 983.8 		& 553.2 	& 672.1	\\ \hline
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Gas and emission prices}
+
+The carbon prices are set based on a scenario provided by \cite{demiray2018Modellierung}. The gas prices are taken from \cite{NREL2018annual}. They are given in the table below:
+			
+\begin{center}
+\begin{tabular}{ |l|c|c|c| } 
+\hline
+Year		& Gas prices	& Emission prices [CHF/ton$_{CO_2}$]	\\ \hline \hline
+2017		& 47.333		& 9		\\ \hline
+2020		& 54.906		& 15		\\ \hline
+2025		& 58.693		& 22		\\ \hline
+2030		& 62.479		& 33		\\ \hline
+2035		& 70.053		& 42		\\ \hline
+2050		& 92.773		& 73		\\ \hline
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Water inflow}
+
+The yearly water inflow is provided as a scenario from \cite{vse2012scenarios}:
+
+\begin{center}
+\begin{tabular}{ |l|c|c|c| } 
+\hline
+Year		& Inflow 		\\ \hline \hline
+2015		& 18 733 000	\\ \hline
+2020		& 18 767 000	\\ \hline
+2025		& 18 767 000	\\ \hline
+2035		& 18 83 3000	\\ \hline
+2050		& 18 933 000	\\ \hline
+\end{tabular}
+\end{center}
+
+There is also a hourly profile in percentage of water per year that is obtained from four reference years. These are the years 2010 to 2014. These are obtained from \cite{demiray2018Modellierung}. They are used in a loop throughout the simulation to calculate the hourly inflow in litter into the reservoirs.
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Waste inflow}
+
+The average waste inflow in Switzerland is of 233 MW per hour over the entire year. Within the model, it is assumed that this remains constant throughout the year. This is based on electricity statistics for 2016 (2041 GWh per year).
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Nuclear fuel price}
+
+The price of nuclear fuel is set at 7 \$/MWh \citep{NREL2018annual}.
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Solar radiation and wind capacity}
+
+The average Swiss solar radiation is obtained from the years 2015 to 2017. These are then used in a loop for the rest of the simulation. This is similar for the wind and for the same year \citep{sfoe2018Elektrizitatsstatistik}.
+
+Solar theoretical maximum is 19 702 MW, wind theoretical maximum is 2 282 MW. The lookups used for the code are provided below. Note that currently in the code these are implemented as step function and not as linear continuous functions.
+
+\begin{center}
+\begin{tabular}{ |l|c| } 
+\hline
+Lookup solar
+		& 	\\ \hline \hline
+0		& 0.147		\\ \hline
+0.0367	& 0.1358		\\ \hline
+0.9306	& 0.114155	\\ \hline
+1		& 0.100114	\\ \hline
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{ |l|c| } 
+\hline
+Lookup wind
+		& 	\\ \hline \hline
+0		& 0.3196	\\ \hline
+0.181	& 0.2497	\\ \hline
+0.195	& 0.2457	\\ \hline
+0.267	& 0.2301	\\ \hline
+1		& 0.1608	\\ \hline
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Run of river}
+
+For the run of river capacity, an hourly profile is used as input. It is based on data from the years 2010 to 2014 that is looped through for the simulation. The source for this data is \cite{demiray2018Modellierung}.
+
+\textcolor{red}{This needs to be checked (the data is not obtained where the reference indicates) - what is used in the code is placed in the table.}
+
+\begin{center}
+\begin{tabular}{ |l|c|c|c| } 
+\hline
+Year		& Inflow [kWh]	\\ \hline \hline
+2015		& 16 400 000	\\ \hline
+2020		& 16 700 000	\\ \hline
+2025		& 16 933 000	\\ \hline
+2035		& 17 533 000	\\ \hline
+2050		& 18 333 000	\\ \hline
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Foreign capacity}
+
+The foreign aspect of the model is also dealt with input data. For the prices, they are obtained based on average prices in France, Germany and Italy between 2015 and 2017. Similarly for the average border capacity both for imports and exports, this is used hourly from the input data of the years 2015 to 2017. This data is obtained from the ENTSO-E transparency platform \citep{ENTSO2018transparency}.
+
+%%%%%%%%%%%% end of subsection

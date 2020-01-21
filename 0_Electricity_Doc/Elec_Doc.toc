@@ -1,0 +1,49 @@
+\contentsline {section}{\numberline {1}Model conceptualisation}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Purpose of the model}{2}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Entities, state variables and scales}{3}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Process overview and scheduling}{3}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Design concepts}{4}{subsection.1.4}
+\contentsline {paragraph}{Basic principles}{4}{section*.2}
+\contentsline {paragraph}{Emergence}{4}{section*.3}
+\contentsline {paragraph}{Adaptation}{4}{section*.4}
+\contentsline {paragraph}{Objectives}{4}{section*.5}
+\contentsline {paragraph}{Prediction}{4}{section*.6}
+\contentsline {paragraph}{Sensing}{5}{section*.7}
+\contentsline {paragraph}{Stochasticity}{5}{section*.8}
+\contentsline {paragraph}{Observation}{5}{section*.9}
+\contentsline {subsection}{\numberline {1.5}Initialisation}{5}{subsection.1.5}
+\contentsline {subsection}{\numberline {1.6}Input data}{5}{subsection.1.6}
+\contentsline {subsection}{\numberline {1.7}Submodels}{6}{subsection.1.7}
+\contentsline {paragraph}{The spot market}{7}{section*.10}
+\contentsline {paragraph}{The electricity price forecast}{7}{section*.11}
+\contentsline {paragraph}{The profitability calculation}{7}{section*.12}
+\contentsline {paragraph}{The NPV calculation}{8}{section*.13}
+\contentsline {paragraph}{The investment pipeline}{8}{section*.14}
+\contentsline {paragraph}{The international trading}{8}{section*.15}
+\contentsline {paragraph}{The demand aspect of storage in the model}{8}{section*.16}
+\contentsline {section}{\numberline {2}Model formalisation}{9}{section.2}
+\contentsline {subsection}{\numberline {2.1}Electricity costs calculation per technology}{9}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Supply amount per technology}{11}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Investment approach}{13}{subsection.2.3}
+\contentsline {section}{\numberline {3}Code documentation}{14}{section.3}
+\contentsline {subsection}{\numberline {3.1}run\_elec.py}{14}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}model\_elec.py}{15}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}asset.py}{22}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}model\_elec\_agents.py}{22}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}model\_elec\_assets.py}{22}{subsection.3.5}
+\contentsline {subsection}{\numberline {3.6}model\_elec\_agents\_init.py}{24}{subsection.3.6}
+\contentsline {subsection}{\numberline {3.7}model\_elec\_assets\_init.py}{24}{subsection.3.7}
+\contentsline {section}{\numberline {4}Model inputs}{24}{section.4}
+\contentsline {subsection}{\numberline {4.1}Asset investments}{24}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Gas and emission prices}{25}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Water inflow}{25}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Waste inflow}{26}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}Nuclear fuel price}{26}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Solar radiation and wind capacity}{26}{subsection.4.6}
+\contentsline {subsection}{\numberline {4.7}Run of river}{27}{subsection.4.7}
+\contentsline {subsection}{\numberline {4.8}Foreign capacity}{27}{subsection.4.8}
+\contentsline {section}{\numberline {A}Dear Diary}{28}{appendix.A}
+\contentsline {subsection}{\numberline {A.1}22/10/2019}{28}{subsection.A.1}
+\contentsline {subsection}{\numberline {A.2}23/10/2019}{29}{subsection.A.2}
+\contentsline {subsection}{\numberline {A.3}24/10/2019}{29}{subsection.A.3}
+\contentsline {subsection}{\numberline {A.4}25/10/2019}{29}{subsection.A.4}

@@ -1,0 +1,262 @@
+
+This section outlines the different algorithms that are used within the electricity market model.
+
+\textcolor{red}{Chapter missing key elements like the merit-order curve algorithm.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Electricity costs calculation per technology}
+
+% notes:
+% what is the difference between operational costs and marginal costs?
+% opportunity costs considers the costs that would be gained by waiting and selling at another time
+
+The calculation of the price at which each asset sells its electricity varies depending on the technology considered. The details of the calculations for the marginal costs are presented below:
+
+\begin{itemize}
+
+% solar
+\item For solar power plants:
+\begin{equation}
+MC_{solar} = VC_{solar}
+\end{equation}
+
+where $MC$ are the marginal costs and $VC$ are the variable costs.
+
+% wind
+\item For wind power plants:
+\begin{equation}
+MC_{wind} = VC_{wind}
+\end{equation}
+
+% hydro and hydro-p
+\item For hydro and hydro-pumping power plants:
+\begin{equation}
+MC_{hydro} = OC + VC_{hydro}
+% why 0.2?
+\end{equation}
+
+where $OC$ are the opportunity costs.
+
+The opportunity costs are calculated using the price reference and depend on the amount of water that is left in the reservoir of the hydro power plant. The price reference is calculated based on the weighted average of the previous three year electricity price on the spot market in the previous years.
+
+\begin{equation}
+P_{ref} = 2 \cdot \frac{3\cdot P_{t-1} + 2\cdot P_{t-2} + P_{t-3}}{6}
+\end{equation}
+
+where $P$ is the average price of electricity on a given year and $t$ is the year within which the simulation is.
+
+If the installed capacity is larger than the water left in the reservoir then, the opportunity costs are:
+
+\begin{equation}
+OC = (P_{ref} - VC_{hydro}) \cdot \left(1 - \frac{RL}{2 \cdot RC_{max}}\right)
+\end{equation}
+
+If the opposite is true, then:
+
+\begin{equation}
+OC = (P_{ref}  - VC_{hydro}) \cdot \left(1 - \frac{RL - IC}{RC_{max}}\right)
+\end{equation}
+
+where $RL$ is the reservoir level, $IC$ is the installed capacity and $RC$ is the reservoir capacity
+
+% run of river
+\item For run of river plants:
+\begin{equation}
+MC_{ror} = VC_{ror}
+\end{equation}
+
+% waste power plants
+\item For waste management power plants:
+\begin{equation}
+MC_{waste} = OC_{waste}
+\end{equation}
+
+Here the costs are calculated using the opportunity costs again. These can be found using the same equations as for hydro power plants.
+
+% thermal power plants
+\item For thermal power plants:
+\begin{equation}
+MC_{thermal} = FC + VC_{thermal}
+\end{equation}
+
+where $FC$ are the fuel costs. The fuel costs include both the gas price and the carbon price. This considers a price for carbon that varies over time and emissions of 0.342834 tons/MWh (NREL, 2018).
+
+Below is the carbon prices scenario:
+
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+2017		& 9 \\ \hline
+2020		& 15  \\ \hline
+2025		& 22  \\ \hline
+2030		& 33  \\ \hline
+2035		& 42 \\ \hline
+2050		& 73 \\
+ \hline
+\end{tabular}
+\end{center}
+
+
+% nuclear power plants
+\item For nuclear power plants:
+\begin{equation}
+MC_{nuclear} = FC + VC_{nuclear}
+\end{equation}
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Supply amount per technology}
+
+The amount of electricity supplied per technology is given using the following equations:
+
+\begin{itemize}
+
+% solar
+\item For solar power plants:
+\begin{equation}
+S_{solar} = C \cdot Solar_{conditions} * UF
+\end{equation}
+
+where $S$ is the supply, $Solar_{conditions}$ is an input file defining how much solar electricity was produced for every hour of the year historically, $UF$ is the potential utilisation factor. The potential utilisation factor is calculated based on a curve that helps assess the best locations for solar and the maximum theoretical amount of roof top solar in Switzerland. The curve is given below:
+
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+0		& 0.147 \\ \hline
+0.0367	& 0.1358  \\ \hline
+0.9306	& 0.114155  \\ \hline
+1		& 0.100114  \\
+ \hline
+\end{tabular}
+\end{center}
+
+% wind
+\item For wind power plants:
+\begin{equation}
+S_{wind} = C \cdot Wind_{conditions} * UF
+\end{equation}
+where $Wind_{conditions}$ is an input file defining how much solar electricity was produced for every hour of the year historically, $UF$ is the potential utilisation factor. The potential utilisation factor is calculated based on a curve that helps assess the best locations for wind and the maximum theoretical amount of wind power in Switzerland. The curve is given below:
+
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+0		& 0.3196 \\ \hline
+0.181	& 0.2497  \\ \hline
+0.195	& 0.2457  \\ \hline
+0.267	& 0.2301  \\ \hline
+1		& 0.1608 \\ 
+ \hline
+\end{tabular}
+\end{center}
+
+% hydro and hydro-p and waste
+\item For hydro, hydro-pumping and waste power plants:
+
+The supply of electricity is dependent on the level of the reservoir. If the reservoir level is below the capacity of the power plant, then the reservoir level is the amount supplied, otherwise, the capacity of the power plant is the electricity supplied.
+
+
+% run of river
+\item For run of river power plants:
+
+\begin{equation}
+S_{ror} = flow_{ror} \cdot growth_{ror} \cdot C_{ror}
+\end{equation}
+
+where $C$ is the installed capacity and the flow is dependent on weather input data.
+
+The run of river growth factor represents the growth of such production over the year. It is based on a scenario provided in \autoref{tab:RORgrowthFactor} and can be calculated using the following equation:
+
+\begin{equation}
+growth_{ror} = C_{ror,scenario}/C_{ror,installed}
+\end{equation}
+
+This considers the entire run of river production within Switzerland and not just one plant.
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+2015		& 16400 \\ \hline
+2020		& 16700  \\ \hline
+2025		& 16933  \\ \hline
+2035		& 17533  \\ \hline
+2050		& 18333 \\ 
+ \hline
+\end{tabular}
+\end{center}
+\caption{Expected total production for all run of river power plants in GWh.}
+\label{tab:RORgrowthFactor}
+\end{table}
+
+% thermal
+\item For thermal power plants:
+\begin{equation}
+S_{thermal} = C
+\end{equation}
+
+% nuclear
+\item For nuclear power plants:
+\begin{equation}
+S_{nuclear} = C
+\end{equation}
+
+Note that nuclear power plants are not online throughout the year. They have a yearly planned maintenance, usually planned in the summer when the plant is offline. This is a done over a period of thirty days. Each starting month is specified as an input per asset.
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%
+%\subsection{Spot market algorithm}
+%\label{ssec:elecSpotMarket}
+
+%%%%%%%%%%%%%%%%
+\subsection{Investment approach}
+\label{ssec:elecInvestments}
+
+The electricity price forecast is used for the investments. This price forecasts consists of estimating a linear relation for the future in the form $y = mx + p$.
+
+The slope $m$ is calculated using the following equation:
+
+\begin{equation}
+U = \frac{P_{t-0} + P_{t-1} + P_{t-2} + P_{t-3}}{4}
+\end{equation}
+
+\begin{equation}
+m = \frac{- 3 \cdot \left(P_{t-3} - U \right) -  \left(P_{t-2} - U \right) + \left(P_{t-1} -  U \right) + 3 \cdot \left (P_{t-0} -  U \right)}{2 \cdot 2015}
+\end{equation}
+
+The constant $p$ is given by:
+\begin{equation}
+p = U - t * m
+\end{equation}
+
+where $t$ is the time at which the simulation is at.
+
+The profitability of an asset is calculated using the following equation:
+
+\begin{equation}
+P = \left( \sum^t \frac{((Y+t) \cdot m + p) - VC}{(1 + r)^{t+1}} \right) \cdot 8760 \cdot \epsilon \cdot C
+\end{equation}
+
+where $P$ are the profits, $Y$ is the initial year, $t$ the year for which profitability is considered after the initial year, $VC$ the variable costs, $r$ the discount rate, $\epsilon$ the utilisation rate and $C$ the capacity of the asset considered.
+
+The losses are calculated using:
+\begin{equation}
+L = \left( \sum^t \left[1 + \frac{1}{(1 + r)^{t+1}} \right] \right) \cdot FC \cdot C
+\end{equation}
+
+where $L$ are the losses, $C$ is the capacity of the plant and $FC$ are the annual fixed costs of the plant.
+
+The profitability is then calculated as the difference between profits and losses.
+
+For investments, the actors use the NPV and the profitability index of potential new power plants. 
+
+The following equations are used to estimate the NPV.
+
+\begin{equation}
+NPV = \sum_{n=0}^N \frac{C_n}{(1+r)^n} = \sum_{n=0}^{N} \frac{(R-MC)*\epsilon-OC}{(1+WACC)^n}
+\end{equation}
+
+where $R$ are the revenues per year, $\epsilon$ is the utilisation factor, $MC$ are the marginal costs, $OC$ are the fixed operating costs. WACC is given as the sum of the risk rate and the discount rate.
+
+%%%%%%%%%%%%%%%% end of the subsection

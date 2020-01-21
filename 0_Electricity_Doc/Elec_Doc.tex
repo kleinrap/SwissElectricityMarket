@@ -1,0 +1,96 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{setspace}
+%\doublespacing
+
+\renewcommand*{\sectionautorefname}{Section} 
+
+\title{Electricity model} 
+\author{Raphael Klein}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage[labelfont=bf]{caption} 	% Make captions bold (Figure & Table)
+\usepackage{subfig}	
+\usepackage{amsmath}
+\usepackage{hyperref}
+%\usepackage[section]{placeins}
+
+\providecommand{\keywords}[1]{\textbf{Keywords:} #1}
+
+\begin{document}
+
+\maketitle
+
+%\textcolor{red.green.blue.cyan.yellow.magenta.}{}
+
+%\newpage
+
+% structure of the report
+% Introduction
+% Modelling
+%	Electricity model
+%	Policy emergence model (SM)
+%	Hybrid model
+% Implementation
+%	Electricity model
+%	Policy emergence model (SM)
+%	Hybrid model
+% Code documentation
+%	Electricity model
+% 	Policy emergence model (SM)
+%	Hybrid model
+% Verification
+%	Electricity model
+% 	Policy emergence model (SM)
+%	Hybrid model
+% Inputs
+%	Electricity model
+%	Policy emergence model (SM)
+%	Hybrid model
+% Experimentation - Scenario design
+% Model initialisation
+%	Electricity model
+% 	Policy emergence model (SM)
+%	Hybrid model
+% Model results 
+% Conclusions
+
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model conceptualisation}
+\input{Modeling}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model formalisation}
+\input{Implementation}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Code documentation}
+\input{CodeDocumentation}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model inputs}
+\input{Inputs}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{apalike} 
+\bibliography{references}
+
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%
+\section{Dear Diary}
+\input{DearDiary}
+
+
+
+
+\end{document}

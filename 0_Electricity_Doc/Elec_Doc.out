@@ -1,0 +1,34 @@
+\BOOKMARK [1][-]{section.1}{Model conceptualisation}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Purpose of the model}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Entities, state variables and scales}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Process overview and scheduling}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{Design concepts}{section.1}% 5
+\BOOKMARK [2][-]{subsection.1.5}{Initialisation}{section.1}% 6
+\BOOKMARK [2][-]{subsection.1.6}{Input data}{section.1}% 7
+\BOOKMARK [2][-]{subsection.1.7}{Submodels}{section.1}% 8
+\BOOKMARK [1][-]{section.2}{Model formalisation}{}% 9
+\BOOKMARK [2][-]{subsection.2.1}{Electricity costs calculation per technology}{section.2}% 10
+\BOOKMARK [2][-]{subsection.2.2}{Supply amount per technology}{section.2}% 11
+\BOOKMARK [2][-]{subsection.2.3}{Investment approach}{section.2}% 12
+\BOOKMARK [1][-]{section.3}{Code documentation}{}% 13
+\BOOKMARK [2][-]{subsection.3.1}{run\137elec.py}{section.3}% 14
+\BOOKMARK [2][-]{subsection.3.2}{model\137elec.py}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.3}{asset.py}{section.3}% 16
+\BOOKMARK [2][-]{subsection.3.4}{model\137elec\137agents.py}{section.3}% 17
+\BOOKMARK [2][-]{subsection.3.5}{model\137elec\137assets.py}{section.3}% 18
+\BOOKMARK [2][-]{subsection.3.6}{model\137elec\137agents\137init.py}{section.3}% 19
+\BOOKMARK [2][-]{subsection.3.7}{model\137elec\137assets\137init.py}{section.3}% 20
+\BOOKMARK [1][-]{section.4}{Model inputs}{}% 21
+\BOOKMARK [2][-]{subsection.4.1}{Asset investments}{section.4}% 22
+\BOOKMARK [2][-]{subsection.4.2}{Gas and emission prices}{section.4}% 23
+\BOOKMARK [2][-]{subsection.4.3}{Water inflow}{section.4}% 24
+\BOOKMARK [2][-]{subsection.4.4}{Waste inflow}{section.4}% 25
+\BOOKMARK [2][-]{subsection.4.5}{Nuclear fuel price}{section.4}% 26
+\BOOKMARK [2][-]{subsection.4.6}{Solar radiation and wind capacity}{section.4}% 27
+\BOOKMARK [2][-]{subsection.4.7}{Run of river}{section.4}% 28
+\BOOKMARK [2][-]{subsection.4.8}{Foreign capacity}{section.4}% 29
+\BOOKMARK [1][-]{appendix.A}{Dear Diary}{}% 30
+\BOOKMARK [2][-]{subsection.A.1}{22/10/2019}{appendix.A}% 31
+\BOOKMARK [2][-]{subsection.A.2}{23/10/2019}{appendix.A}% 32
+\BOOKMARK [2][-]{subsection.A.3}{24/10/2019}{appendix.A}% 33
+\BOOKMARK [2][-]{subsection.A.4}{25/10/2019}{appendix.A}% 34

@@ -1,0 +1,183 @@
+The model presented in this chapter is a transposition of the model created by Paul van Baal and Reinier Verhoog and first created by Paul van Baal for his master thesis \citep{van2016business}. The model has also been further improved to look into the effect of a strategic reserve in a hybrid system dynamics - agent based model version \citep{van2019effectiveness}. In this report, the model, which was a system dynamics model and then a hybrid model, is turned into an agent based model. This report is the ODD presentation of that model \citep{grimm2010odd}. All equations and additional details are in the appendices.
+
+%%%%%%%%%%%%
+\subsection{Purpose of the model}
+\label{ssec:purpose}
+
+The purpose of this model is to simulate the Swiss electricity system. This includes the spot market, international trade with neighbouring countries, and investments. This constitutes what is considered to be the simplest electricity model (SMel). In future iterations of the model, depending on the goals of the research, the model can be extended to consider the presence of demand side management, batteries, prosumers or a strategic reserve.
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Entities, state variables and scales}
+\label{ssec:entities}
+
+There are four types of agents within the model: the market operator, the firms (or investors), the supply agents and the demand agents. The market operator is the agent that is in charge of the spot market, making sure everything is going well. The firms are the agents that own the power plants and other assets present in the model. They are in control of the  power plants. The demand agents are the agents that buy electricity. This includes the inflexible demand (which is based on a  historical scenario), and demand created by hydro-pumping power and international trading.
+
+%There are two types of agents within the model: the agents which are in charge of taking care of the electricity market and the assets which represent the physical infrastructure and which produce electricity.
+
+The firms are characterised by the following attributes: assets owned, electricity supplied, planned assets, retired assets and constructed assets. The supply agents can either be the power plants (assets), they can be long term contracts with France, or they can be the net transfer capacities from the different border countries. Each has a different set of attributes. The assets are characterised by the following attributes: owner, technology type, installed capacity, age, lifespan, capital costs, annual fixed costs, variable costs and utilisation factor. Additionally, depending on the technology type, some power plants have more parameters. For example, the thermal power plants, the nuclear power plants and the waste power plants all have a fuel cost. The thermal power plants also have an emission attribute. The nuclear power plants have attributes related to their maintenance requirements: maintenance month and maintenance time. Waste, hydro and hydro-pumping assets have attributes related to their reservoirs: reservoir level and maximum reservoir level. Hydro-pumping assets have an efficiency attribute related to their pumping efficiency.
+
+The technology types are limited to: solar, wind, hydro power, hydro-pumping power, run of river, thermal, nuclear and waste. The firms can only invest in solar, wind and thermal technologies as it is considered that other technologies are already maxed out in Switzerland or they cannot be used to produce significantly more electricity.
+
+%The actors are provided as follows: the market operator, the firms, the supply agents and the demand agents. The market operator is the agent that runs the spot market. The firms represent the investors that have the capacity to invest for new generation capacity. They also have to decide whether to keep plants online, if they should be mothballed or dismantled. The supply agents are the plants themselves but they can also include foreign countries. Finally, the demand agents create the electricity demand that represents the demand in Switzerland but also the demand of hydropower pumping plants.
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Process overview and scheduling}
+\label{ssec:process}
+
+The model runs along two different scales, highlighting two parts of the model. The first part is the spot market, running on an hourly basis. It consists of all the actions related to the spot market including all of the inputs, the calculation of the demand, the calculation of the spot price, the distribution of the money and electricity when the equilibrium is found and the update of the NPV for all of the agents (that is later used for investments).
+
+The second part is related to the investments that the firms can perform. This happens monthly. These are actions that are related to the firms. They decide whether to invest in new assets. They also decide whether they should reinvest in their current assets by extending their lifetimes or shuttering them temporarily or definitively. Then there are additional measures that include the end of life actions that occurs when an asset has reached its lifetime. It also includes scenario based events such as the closing of nuclear power plants according to a politically determined timeline.
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Design concepts}
+\label{ssec:design}
+
+%%
+\paragraph{Basic principles}
+%Which general concepts, theories, hypotheses, or modeling approaches are underlying the model?s design? Explain the relationship between these basic principles, the complexity expanded in this model, and the purpose of the study. How were they taken into account? Are they used at the level of submodels (e.g., decisions on land use, or foraging theory), or is their scope the system level (e.g., intermediate disturbance hypotheses)? Will the model provide insights about the basic principles themselves, i.e., their scope, their usefulness in real-world scenarios, validation, or modification (Grimm, 1999)? Does the model use new, or previously developed, theory for agent traits from which system dynamics emerge (e.g., ?individual-based theory? as described by Grimm and Railsback [2005; Grimm et al., 2005])?
+
+The model is, in essence, a simple supply and demand model where electricity is demanded and supplied. The main added element is that instead of resolving this supply and demand every week or year as it has been done in past models, it is done on an hourly basis.
+
+%%
+\paragraph{Emergence}
+%What key results or outputs of the model are modelled as emerging from the adaptive traits, or behaviours, of individuals? In other words, what model results are expected to vary in complex and perhaps unpredictable ways when particular characteristics of individuals or their environment change? Are there other results that are more tightly imposed by model rules and hence less dependent on what individuals do, and hence ?built in? rather than emergent results?
+
+The main outputs of the model relate to the energy mix that is needed to meet the Swiss electricity demand. The investments, their type and amount are also of interest for the purpose of the study and should emerge from the needs to supply electricity.
+
+%%
+\paragraph{Adaptation}
+%What adaptive traits do the individuals have? What rules do they have for making decisions or changing behaviour in response to changes in themselves or their environment? Do these traits explicitly seek to increase some measure of individual success regarding its objectives (e.g., ?move to the cell providing fastest growth rate?, where growth is assumed to be an indicator of success; see the next concept)? Or do they instead simply cause individuals to reproduce observed behaviors (e.g., ?go uphill 70\% of the time?) that are implicitly assumed to indirectly convey success or fitness?
+
+There is no real adaptation programmed in this model beyond agents deciding on whether to discontinue their current assets and whether to invest in current or new ones.
+
+%%
+\paragraph{Objectives}
+%If adaptive traits explicitly act to increase some measure of the individual?s success at meeting some objective, what exactly is that objective and how is it measured? When individuals make decisions by ranking alternatives, what criteria do they use? Some synonyms for ?objectives? are ?fitness? for organisms assumed to have adaptive traits evolved to provide reproductive success, ?utility? for economic reward in social models or simply ?success criteria? (note that the objective of such agents as members of a team, social insects, organs ? e.g., leaves ? of an organism, or cells in a tissue, may not refer to themselves but to the team, colony or organism of which they are a part).
+
+The objectives for the market operator is that there be a balanced spot market. The objective for the firms is to make as much money as possible. The objective of the supply agents is to supply as much energy as possible. The objective of the demand agents is to have their demand met. 
+
+%%
+\paragraph{Prediction}
+%Prediction is fundamental to successful decision-making; if an agent?s adaptive traits or learning procedures are based on estimating future consequences of decisions, how do agents predict the future conditions (either environmental or internal) they will experience? If appropriate, what internal models are agents assumed to use to estimate future conditions or consequences of their decisions? What tacit or hidden predictions are implied in these internal model assumptions?
+
+The firm agents have to use prediction for the investments. They forecast the price of electricity for the next year, two years and five years based on historical data for each technology considered. This is then used in the profitability check and the Net Present Value (NPV) by the firms for their respective assets or future investments.
+
+%%
+\paragraph{Sensing}
+%What internal and environmental state variables are individuals assumed to sense and consider in their decisions? What state variables of which other individuals and entities can an individual perceive; for example, signals that another individual may intentionally or unintentionally send? Sensing is often assumed to be local, but can happen through networks or can even be assumed to be global (e.g., a forager on one site sensing the resource lev- els of all other sites it could move to). If agents sense each other through social networks, is the structure of the network imposed or emergent? Are the mechanisms by which agents obtain information modelled explicitly, or are individuals simply assumed to know these variables?
+
+The sensing of the actors is limited. Only the firms have sensing. They have a clear and full understanding of the performance of their assets. This includes the costs involved, the electricity generated and sold, and for some technologies, the reservoir related values. For investments, actors only inform their investment potential based on what assets are present in the system and the overall price of electricity. They do not have knowledge of other firm's assets in construction or planned. This can therefore lead to periodical supply surplus.
+
+%%
+\paragraph{Stochasticity}
+%What processes are modeled by assuming they are random or partly random? Is stochasticity used, for example, to reproduce variability in processes for which it is unimportant to model the actual causes of the variability? Is it used to cause model events or behaviors to occur with a specified frequency?
+
+Most of the model is deterministic. Some outages can occur randomly for each of the plants. Scenarios also provide some stochasticity to the simulation.
+
+%%
+\paragraph{Observation}
+%What data are collected from the ABM for testing, understanding, and analyzing it, and how and when are they collected? Are all output data freely used, or are only certain data sampled and used, to imitate what can be observed in an empirical study (?Virtual Ecologist? approach; Zurell et al., 2010)?
+
+The model produces a large amount of data. Not all of it is necessary for testing, understanding and analysis. Some of the data needs to be collected to feed the policy process model. The agents in the policy process based their decision based on what is going on with a set of key performance indicators in the electricity model. Beyond this, the interest for understanding and analysis is mostly focused on the electricity prices, the number of outages (if any), the supply mix, and the trade with foreign countries. Depending on the study being performed, the amount of investment is also of interest along with the type of investment and measures related to the goals of the Energy Strategy 2050.
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Initialisation}
+\label{sec:initialisation}
+
+The model is initialised with values from 2018 for all of the assets that are present in the model. This includes the 2018 Swiss electricity power plants distribution and costs. The initialisation state is always the same for all simulations. All the values considered are informed on the Swiss electricity sector directly.
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Input data}
+\label{ssec:inputData}
+
+There are a lot of input data required to simulate the electricity system. The data used to run the model is given below:
+
+\begin{itemize}
+\item Asset investment (type, sizes and costs) 
+\item The gas prices for thermal power plants (scenario based)
+\item The emission prices for thermal power plants (scenario based)
+\item The water inflow in Swiss reservoirs for hydro power plants yearly and hourly (scenario included)
+\item The waste inflow in Swiss waste management facilities yearly (scenario based)
+\item The price of nuclear fuel (scenario based)
+\item The amount of solar radiation hourly (based on the years 2015, 2016 and 2017)
+\item The amount of wind hourly (based on the years 2015, 2016 and 2017)
+\item The amount of run of river water (based on the years 2010, 2011, 2012, 2013 and 2014)
+\item The average hourly electricity price in France, Germany and Italy (based on the years 2015, 2016 and 2017)
+\item The average border capacity (import and export) with France, Germany and Italy (based on the years 2015, 2016 and 2017)
+\end{itemize}
+
+%%%%%%%%%%%% end of subsection
+
+%%%%%%%%%%%%
+\subsection{Submodels}
+\label{sec:submodel}
+
+There is a large number of submodels that are used to simulate the Swiss electricity market. They are all detailed qualitatively within this section. The equations used are present in the appendix for each submodel.
+
+\begin{enumerate}
+\item The spot market
+\item The electricity price forecast
+\item The profitability calculation
+\item The NPV calculation
+\item The end of life actions
+\item The international trading
+\item The demand aspect of storage in the model
+\end{enumerate}
+
+%%
+\paragraph{The spot market}
+
+The spot market is at the centre of the model. Its role is to match supply with demand. Some of the demand is inelastic and always has to be met. Some of it is elastic and will be met depending on the supply price. The spot market includes all of the assets (supply and demand wise) and the international trading. It is cleared on an hourly basis using a merit order curve. 
+
+The spot price is calculated using the merit order curve. The cheapest technologies are first selected and then depending on demand, the price moves up to account for other technologies. In the cases where there is not enough supply, the Value of Lost Load (VOLL) is set at 3000 CHF per MWh.
+
+There are two parts for the supply of energy. There is the installed capacity and the available capacity at any point of time. The market is cleared every hour.
+
+The supply that is considered for the spot market is made of: hydropower (including run-of-river, reservoir and pumped storage), nuclear power, CCGT, solar and wind power, long term French nuclear import contracts, interruptible contracts (dischargeable generation option), and thermal power (including green CHP, waste burning power plants, other thermal).
+
+%%
+\paragraph{The electricity price forecast}
+
+The electricity price forecast is used by the firms to gain an understanding of the market and help them assess whether future investments are worth the expenses. This price forecasts consists of estimating a linear relation for the future in the form $y = mx + p$. Therefore finding a slope ($m$) and a constant ($p$) for future prices based on prices from the previous four years. This is done using a weighted average of the last three years of prices and is updated throughout the simulation based on the evolution of the price of electricity for each technology.
+
+
+%%
+\paragraph{The profitability calculation}
+
+Towards the end of life of an asset, within ten years of the end of life, the one year and five profitability of the assets are assessed monthly by the owners. Then several options present themselves. If the one year profitability is negative and the asset has reached its lifetime, then it is decommissioned. If the five year profitability is higher than zero but the one year profitability is negative, then the asset is mothballed. If the one year profitability is positive and the asset has been renovated less than twice, it is renovated. If not, it is decommissioned when it reaches its final age.
+
+%%
+\paragraph{The NPV calculation}
+
+The NPV calculation is used by the actors to assess potential new power plants for their portfolios. The NPV is used to assess the profitability of a future plant. If that profitability is higher than the hurdle rate of the actor, then the actor will consider investing in the plant.
+
+%%
+\paragraph{The investment pipeline}
+
+The firms can invest in three main technologies: solar, wind and thermal power plants. These investments are discrete in capacity. Only one option per technology is provided as an option to the investors. Every month, each firm is provided with the opportunity of investing in one of the three technologies. They test the NPV of each of the plants and the most positive, if there is one, is approved by the firm. Approval at this stage means that a permit is demanded. This is a process that takes a different amount of time depending on the technology. Its rate of success also depend on the technology with the rate of success of solar being affected by land scarcity and the rage of success of wind being affected by land scarcity and social acceptance.
+
+Once the permit has been approved, the firms will once again assess the NPV of the investment on a monthly basis. If the NPV has changed and is now negative, the firm keeps the permit without building the plant. If it becomes positive, then construction is started. The plant then comes online only after the building period has been completed.
+
+%%
+\paragraph{The international trading}
+
+International trading of electricity is introduced in the model. The import and export prices of the electricity are known from historical data for Germany, Italy and France. The supply of this electricity is then limited by the inter-connections to these different countries.
+
+This international trading is supplemented by the long term contracts that Switzerland has with France. Such contracts take a part of the capacity on the interconnections between France and Switzerland, limiting the potential for international trading. 
+
+%%
+\paragraph{The demand aspect of storage in the model} 
+
+Demand is mostly present in the model through the inelastic demand of Swiss consumers. One can also consider the demand of foreign countries and the demand of storage technologies such as hydro-pumping. All these aspects are taken into account in the spot market to make sure demand is met by supply. In the future, prosumers and their batteries could also be considered as demand agents. 
+
+%%%%%%%%%%%% end of subsection
